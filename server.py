@@ -737,20 +737,7 @@ async def find_free_fulltext_batch(dois: list[str]) -> str:
 # ─────────────────────────────────────────
 
 if __name__ == "__main__":
-    import uvicorn
-    from starlette.responses import JSONResponse
-    from starlette.routing import Route
-
-    # Add health routes directly to mcp_app (avoids mounting issues)
-    async def health(request):
-        return JSONResponse({"status": "ok", "tools": 44, "version": "3.1"})
-
-    mcp_app = mcp.streamable_http_app()
-    mcp_app.routes.insert(0, Route("/health", health))
-    mcp_app.routes.insert(0, Route("/", health))
-
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run(mcp_app, host="0.0.0.0", port=port)
+    mcp.run(transport="streamable-http")
 
 
 # ─────────────────────────────────────────
