@@ -5,15 +5,12 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: python server.py
     plan: free
-    healthCheckPath: /mcp
     envVars:
       - key: PORT
         value: 8000
       - key: PUBMED_EMAIL
         value: your-email@domain.com
       - key: PUBMED_API_KEY
-        value: ""
         sync: false
       - key: SEMANTIC_SCHOLAR_API_KEY
-        value: ""
         sync: false
