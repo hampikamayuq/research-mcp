@@ -12,7 +12,9 @@ import xml.etree.ElementTree as ET
 from typing import Optional
 import os
 
-mcp = FastMCP("research-mcp")
+import os as _os
+_port = int(_os.environ.get("PORT", 8000))
+mcp = FastMCP("research-mcp", host="0.0.0.0", port=_port)
 
 PUBMED_API_KEY = os.environ.get("PUBMED_API_KEY", "")
 PUBMED_EMAIL   = os.environ.get("PUBMED_EMAIL", "research@qara.com.br")
@@ -640,7 +642,4 @@ async def find_free_fulltext_batch(dois: list[str]) -> str:
 # ─────────────────────────────────────────
 
 if __name__ == "__main__":
-    import uvicorn
-    app = mcp.streamable_http_app()
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    mcp.run(transport="streamable-http")
