@@ -640,4 +640,7 @@ async def find_free_fulltext_batch(dois: list[str]) -> str:
 # ─────────────────────────────────────────
 
 if __name__ == "__main__":
-    mcp.run(transport="streamable-http", host="0.0.0.0", port=8000)
+    import uvicorn
+    app = mcp.streamable_http_app()
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
