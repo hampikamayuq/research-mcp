@@ -1,70 +1,63 @@
-# Research MCP Server
+# Research MCP Server v2
 
-MCP server com busca científica em 3 fontes gratuitas:
-- **Semantic Scholar** — 200M+ papers, busca semântica
-- **OpenAlex** — 250M+ works, filtros avançados
-- **Europe PMC** — full-text, revisões sistemáticas
+MCP server com busca científica em 4 fontes gratuitas + acesso a full-text legal.
 
-## Ferramentas disponíveis
+## Ferramentas (9)
 
-| Ferramenta | Descrição |
-|---|---|
-| `search_semantic_scholar` | Busca no Semantic Scholar |
-| `search_openalex` | Busca no OpenAlex |
-| `search_europe_pmc` | Busca no Europe PMC |
-| `research_all_sources` | Busca nas 3 fontes simultâneas |
+| Ferramenta | Fonte | Descrição |
+|---|---|---|
+| `search_pubmed` | PubMed/NCBI | Busca com filtros MeSH, tipo de artigo, free full text |
+| `get_paper_details` | PubMed + S2 | Detalhes completos por PMID ou DOI |
+| `find_related_articles` | PubMed | Artigos similares a partir de um PMID |
+| `search_semantic_scholar` | Semantic Scholar | Busca semântica em 200M+ artigos |
+| `search_openalex` | OpenAlex | Filtros avançados em 250M+ works |
+| `search_europe_pmc` | Europe PMC | Full-text e revisões sistemáticas |
+| `research_all_sources` | Todas | Busca simultânea nas 4 fontes |
+| `find_free_fulltext` | Unpaywall | Melhor link gratuito/legal por DOI |
+| `find_free_fulltext_batch` | Unpaywall | Verifica acesso de até 10 DOIs de uma vez |
 
 ---
 
 ## Deploy no Render.com (gratuito)
 
-### 1. Criar conta e repositório
+### 1. GitHub
+1. Cria repositório `research-mcp` em github.com
+2. Faz upload dos 4 arquivos: `server.py`, `requirements.txt`, `render.yaml`, `README.md`
 
-1. Cria conta em [render.com](https://render.com)
-2. Cria conta em [github.com](https://github.com) (se não tens)
-3. Cria novo repositório no GitHub chamado `research-mcp`
-4. Faz upload dos 3 arquivos: `server.py`, `requirements.txt`, `render.yaml`
-
-### 2. Deploy no Render
-
-1. No Render: **New → Web Service**
-2. Conecta teu repositório GitHub
+### 2. Render
+1. render.com → **New → Web Service**
+2. Conecta o repositório GitHub
 3. Render detecta o `render.yaml` automaticamente
-4. Clica em **Deploy**
-5. Aguarda ~2 minutos
-6. Copia a URL pública gerada (ex: `https://research-mcp.onrender.com`)
+4. **Deploy**
+5. Copia a URL gerada (ex: `https://research-mcp.onrender.com`)
 
-### 3. Conectar no Claude.ai
+### 3. Variáveis de ambiente (opcionais mas recomendadas)
+No Render → Environment → Add Environment Variable:
 
-1. Vai em [claude.ai](https://claude.ai) → **Settings → Integrations**
-2. Clica em **Add Integration**
-3. Cola a URL: `https://research-mcp.onrender.com/mcp`
-4. Nome: `Research MCP`
-5. Salva
+| Variável | Onde obter | Efeito |
+|---|---|---|
+| `PUBMED_API_KEY` | ncbi.nlm.nih.gov/account | Rate limit 3→10 req/s |
+| `PUBMED_EMAIL` | teu email | Boa prática NCBI |
 
-### 4. Testar
+### 4. Conectar no Claude.ai
+1. claude.ai → **Settings → Integrations → Add Integration**
+2. URL: `https://research-mcp.onrender.com/mcp`
+3. Nome: `Research MCP`
 
-No chat do Claude:
+---
+
+## Workflow recomendado
+
 ```
-Busca evidência sobre tratamento de carcinoma basocelular superficial 
-em todas as fontes, apenas artigos open access dos últimos 5 anos
+1. research_all_sources("query")          → visão geral de 4 fontes
+2. find_free_fulltext_batch([doi1, doi2]) → quais tenho acesso gratuito?
+3. get_paper_details("PMID")             → abstract completo + MeSH terms
+4. find_related_articles("PMID")         → expandir revisão
 ```
 
 ---
 
-## Rodar localmente (opcional)
+## ⚠️ Render free tier
 
-```bash
-pip install -r requirements.txt
-python server.py
-# Servidor em http://localhost:8000
-```
-
----
-
-## ⚠️ Aviso sobre Render free tier
-
-O serviço gratuito do Render **hiberna após 15 min de inatividade**.
-A primeira requisição depois de inativo demora ~30 segundos para acordar.
-
-Para evitar: usa [UptimeRobot](https://uptimerobot.com) (gratuito) para fazer ping a cada 10 min na URL `/mcp`.
+O serviço hiberna após 15 min de inatividade — primeira requisição demora ~30s.
+Para manter acordado: [UptimeRobot](https://uptimerobot.com) (gratuito) com ping a cada 10 min na URL `/mcp`.
