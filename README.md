@@ -6,7 +6,7 @@ the full research workflow — from search to synthesis, meta-analysis, and expo
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
-[![Tools: 43](https://img.shields.io/badge/tools-43-green.svg)]()
+[![Tools: 44](https://img.shields.io/badge/tools-44-green.svg)]()
 
 ---
 
@@ -57,6 +57,7 @@ the full research workflow — from search to synthesis, meta-analysis, and expo
 | `find_free_fulltext` | Best free legal link for any DOI (Unpaywall) |
 | `find_free_fulltext_batch` | Batch free-access check (up to 10 DOIs) |
 | `download_paper` | 7-source fallback PDF retrieval (Unpaywall→PMC→CORE→OpenAIRE→S2→arXiv) |
+| `read_paper_fulltext` | **Full text extraction** — PMC XML → Europe PMC → arXiv HTML → PDF (PyMuPDF). Section filtering supported. |
 
 ### 📊 Metrics & Impact
 | Tool | Description |
@@ -122,6 +123,7 @@ URL: `https://your-service.onrender.com/mcp`
 |---|---|
 | `PUBMED_API_KEY` | PubMed rate limit 3→10 req/s ([get free key](https://www.ncbi.nlm.nih.gov/account/)) |
 | `PUBMED_EMAIL` | Required by NCBI best practices |
+| `SEMANTIC_SCHOLAR_API_KEY` | S2 rate limit 1→10 req/s — eliminates throttling in parallel searches ([get free key](https://www.semanticscholar.org/product/api)) |
 
 ---
 
@@ -183,6 +185,9 @@ NIH RePORTER · WHO IRIS · OMIM
 - Render free tier hibernates after 15 min. Use [UptimeRobot](https://uptimerobot.com) to ping `/mcp` every 10 min.
 - AI tools (RoB, GRADE, PICO, etc.) call the Claude API automatically when used via Claude.ai — no setup needed.
 - Results cached in memory for 1 hour.
+- `read_paper_fulltext` uses pymupdf4llm for structured Markdown extraction from PDFs, preserving tables and headings.
+- All HTTP calls use exponential backoff retry (3 attempts, 1s→2s→4s) with Retry-After header support.
+- Full-text content from PDFs is scanned for prompt injection patterns before being returned.
 
 ---
 
