@@ -1,77 +1,105 @@
 # 🔬 Research MCP Server
 
-A free, open-source MCP (Model Context Protocol) server that connects AI assistants like Claude to scientific literature databases — with no paywalls, no API keys required.
+The most complete open-source MCP server for scientific literature research.
+Connects AI assistants (Claude, etc.) to 10+ data sources with 43 tools covering
+the full research workflow — from search to synthesis, meta-analysis, and export.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
+[![Tools: 43](https://img.shields.io/badge/tools-43-green.svg)]()
+
+---
 
 ## Features
 
-- **6 data sources** in parallel: PubMed, Semantic Scholar, OpenAlex, Europe PMC, ClinicalTrials.gov, bioRxiv/medRxiv
-- **Legal full-text access** via Unpaywall
-- **AI-powered synthesis** via Claude (PICO, summarization, query translation, paper comparison)
-- **Evidence ranking** with composite scoring (study design + citations + journal impact)
-- **Export** to RIS (Zotero/Mendeley/EndNote) and CSV (Rayyan/Excel)
-- **In-memory cache** with 1hr TTL — repeated queries return instantly
-- **25 tools** covering the full research workflow
-- **No required API keys** — all sources are free and open
+- **10 data sources:** PubMed, Semantic Scholar, OpenAlex, Europe PMC, Cochrane, arXiv, CORE, ClinicalTrials.gov, bioRxiv/medRxiv, FDA, NIH RePORTER, WHO, OMIM
+- **Legal full-text access** with 7-source fallback chain (Unpaywall → PMC → CORE → OpenAIRE → S2 → arXiv)
+- **Evidence appraisal:** RoB 2 / ROBINS-I, GRADE, meta-analysis data extraction
+- **Statistical calculator:** OR, RR, ARR, NNT/NNH, CI 95%
+- **Citation network analysis** — who cited this, what it cites, influential papers
+- **Research gap analysis** — identify unexplored areas in a field
+- **Literature monitoring** — persistent topic alerts with SQLite
+- **Export:** RIS (Zotero/Mendeley/EndNote), CSV (Rayyan/Covidence), Bibliography (Vancouver/APA)
+- **No required API keys** — all core sources are free and open
+- **In-memory cache** (1hr TTL) — repeated queries return instantly
 - **One-click deploy** to Render.com free tier
 
 ---
 
-## Tools (25)
+## Tools (43)
 
 ### 🔍 Search
-| Tool | Description |
-|---|---|
-| `search_pubmed` | PubMed with MeSH filters, article type, free full-text |
-| `search_semantic_scholar` | Semantic search across 200M+ papers |
-| `search_openalex` | Advanced filters across 250M+ works |
-| `search_europe_pmc` | Full-text and systematic review search |
-| `search_preprints` | bioRxiv + medRxiv preprints |
-| `search_clinical_trials` | ClinicalTrials.gov — recruiting and completed trials |
-| `search_high_impact_papers` | Filter by citation count with impact badges |
-| `research_all_sources` | Simultaneous search across all 4 main sources |
+| Tool | Source | Description |
+|---|---|---|
+| `search_pubmed` | PubMed/NCBI | MeSH filters, article type, free full-text |
+| `search_semantic_scholar` | Semantic Scholar | Semantic search, 200M+ papers |
+| `search_openalex` | OpenAlex | 250M+ works, advanced filters |
+| `search_europe_pmc` | Europe PMC | Full-text, systematic reviews |
+| `search_preprints` | bioRxiv+medRxiv | Recent preprints |
+| `search_arxiv` | arXiv | AI/ML in medicine, bioinformatics |
+| `search_core` | CORE.ac.uk | 200M+ OA institutional repository articles |
+| `search_clinical_trials` | ClinicalTrials.gov | Ongoing and completed trials |
+| `search_cochrane` | Cochrane Library | Highest-quality systematic reviews |
+| `search_high_impact_papers` | Semantic Scholar | Filter by citation count + impact badges |
+| `search_nih_reporter` | NIH RePORTER | Active research grants by topic |
+| `search_fda_approvals` | openFDA | Drug approvals, labels, adverse events, recalls |
+| `search_omim` | OMIM | Genetic diseases, genes, phenotypes |
+| `search_who_guidelines` | WHO IRIS | International guidelines and reports |
+| `research_all_sources` | All | Simultaneous search across 4 main sources |
 
-### 📄 Article Details
+### 📄 Article Details & Access
 | Tool | Description |
 |---|---|
-| `get_paper_details` | Full details by PMID or DOI — abstract, MeSH, PMC link |
+| `get_paper_details` | Full details by PMID or DOI (abstract, MeSH, PMC link) |
 | `find_related_articles` | Similar articles from a seed PMID |
 | `get_references` | Full reference list via CrossRef |
-| `check_retraction` | Retraction/correction check via CrossRef |
+| `check_retraction` | Retraction/correction check |
+| `find_free_fulltext` | Best free legal link for any DOI (Unpaywall) |
+| `find_free_fulltext_batch` | Batch free-access check (up to 10 DOIs) |
+| `download_paper` | 7-source fallback PDF retrieval (Unpaywall→PMC→CORE→OpenAIRE→S2→arXiv) |
 
-### 🔓 Full-Text Access
+### 📊 Metrics & Impact
 | Tool | Description |
 |---|---|
-| `find_free_fulltext` | Best free, legal link for any DOI via Unpaywall |
-| `find_free_fulltext_batch` | Batch free-access check for up to 10 DOIs |
+| `get_journal_impact` | IF (2yr), h-index, quartile estimate, OA status |
+| `get_author_profile` | h-index, citations, affiliations, research topics |
+| `rank_evidence` | Composite evidence ranking (design + citations + IF) |
+| `get_citation_network` | Citation graph — who cited this + what it cites |
+| `find_expert_reviewers` | Suggest peer reviewers by expertise and h-index |
 
-### 📊 Metrics
+### 🧪 Evidence Appraisal & Statistics
 | Tool | Description |
 |---|---|
-| `get_journal_impact` | Impact Factor (2yr), h-index, quartile, OA status |
-| `get_author_profile` | h-index, citations, affiliations, top topics |
-| `rank_evidence` | Rank articles by evidence strength (design + citations + IF) |
+| `assess_risk_of_bias` | RoB 2 (RCTs) or ROBINS-I (observational) via Claude |
+| `grade_evidence_body` | Full GRADE assessment for a body of evidence |
+| `extract_meta_analysis_data` | Extract 2×2 table data / continuous data for meta-analysis |
+| `calculate_statistics` | OR, RR, ARR, NNT/NNH, CI 95% from a 2×2 table |
 
-### 🤖 AI-Powered Analysis
+### 🤖 AI-Powered Synthesis
 | Tool | Description |
 |---|---|
 | `extract_pico` | Extract Population, Intervention, Comparison, Outcome |
-| `summarize_papers` | Synthesize multiple abstracts into evidence summary |
-| `compare_papers` | Structured comparison table across multiple papers |
-| `translate_query` | Convert clinical question to optimized PubMed query |
-| `get_mesh_terms` | Suggest MeSH terms and search strategy |
+| `summarize_papers` | Evidence synthesis across multiple abstracts |
+| `compare_papers` | Structured comparative table across papers |
+| `translate_query` | Clinical question → optimized PubMed query |
+| `get_mesh_terms` | MeSH terms and search strategy |
+| `find_research_gaps` | Identify unexplored areas and controversies |
+| `translate_abstract` | Medical-grade translation preserving terminology |
 
-### 📦 Export
+### 📦 Export & Productivity
 | Tool | Description |
 |---|---|
-| `generate_bibliography` | Format references in Vancouver, APA, or ABNT |
-| `export_to_ris` | RIS format for Zotero, Mendeley, EndNote |
-| `export_to_csv` | CSV for Rayyan, Excel, systematic review tools |
+| `generate_bibliography` | Vancouver, APA, or ABNT formatting |
+| `export_to_ris` | RIS for Zotero, Mendeley, EndNote |
+| `export_to_csv` | CSV with citations for Rayyan, Covidence, Excel |
+| `detect_duplicates` | Find exact and near-duplicate papers in a list |
+| `monitor_topic` | Persistent literature alerts (SQLite-backed) |
 
 ---
 
 ## Deploy (Render.com free tier)
 
-### 1. Fork or clone this repository
+### 1. Fork or clone
 ```bash
 git clone https://github.com/YOUR_USERNAME/research-mcp
 cd research-mcp
@@ -80,26 +108,20 @@ cd research-mcp
 ### 2. Deploy to Render
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
 
-Or manually:
-1. Go to [render.com](https://render.com) → **New → Web Service**
-2. Connect your GitHub repository
-3. Render auto-detects `render.yaml`
-4. Click **Deploy** (~2 min)
-5. Copy your public URL (e.g. `https://research-mcp.onrender.com`)
+Or manually: **New → Web Service** → connect repo → Deploy (~2 min)
 
 ### 3. Connect to Claude.ai
-1. Go to [claude.ai](https://claude.ai) → **Settings → Integrations → Add Integration**
-2. Enter your URL: `https://research-mcp.onrender.com/mcp`
-3. Save — all 25 tools are now available
+**Settings → Integrations → Add Integration**
+URL: `https://your-service.onrender.com/mcp`
 
 ---
 
 ## Optional environment variables
 
-| Variable | Where to get | Effect |
-|---|---|---|
-| `PUBMED_API_KEY` | [ncbi.nlm.nih.gov/account](https://www.ncbi.nlm.nih.gov/account/) | PubMed rate limit 3→10 req/s |
-| `PUBMED_EMAIL` | Your email | Best practice required by NCBI |
+| Variable | Effect |
+|---|---|
+| `PUBMED_API_KEY` | PubMed rate limit 3→10 req/s ([get free key](https://www.ncbi.nlm.nih.gov/account/)) |
+| `PUBMED_EMAIL` | Required by NCBI best practices |
 
 ---
 
@@ -111,70 +133,58 @@ python server.py
 # Server at http://localhost:8000/mcp
 ```
 
-Expose with [ngrok](https://ngrok.com):
-```bash
-ngrok http 8000
-```
-
 ---
 
 ## Example workflows
 
-**Full literature review:**
+**Full systematic review:**
 ```
-translate_query("Does dupilumab improve QoL in atopic dermatitis?")
-→ research_all_sources("dupilumab atopic dermatitis", year_from=2018)
-→ rank_evidence([pmid1, pmid2, pmid3])
-→ compare_papers([pmid1, pmid2, pmid3], comparison_focus="efficacy and safety")
-→ find_free_fulltext_batch([doi1, doi2])
-→ check_retraction(doi)
-→ summarize_papers([abstract1, abstract2])
-→ generate_bibliography([doi1, doi2], style="vancouver")
-→ export_to_ris([doi1, doi2])
+translate_query → research_all_sources → rank_evidence
+→ search_cochrane → assess_risk_of_bias → grade_evidence_body
+→ extract_meta_analysis_data → calculate_statistics
+→ compare_papers → export_to_ris → export_to_csv
 ```
 
-**Quick clinical question:**
+**Rapid clinical appraisal:**
 ```
-search_high_impact_papers("vismodegib basal cell carcinoma", min_citations=100)
-→ get_journal_impact("JAMA Dermatology")
-→ extract_pico(abstract)
-```
-
-**Stay current:**
-```
-search_preprints("melanoma immunotherapy", days_back=90)
-→ search_clinical_trials("melanoma pembrolizumab", status="RECRUITING", phase="PHASE3")
+search_high_impact_papers(min_citations=100) → rank_evidence
+→ extract_pico → check_retraction → download_paper
 ```
 
-**Systematic review export:**
+**Research strategy:**
 ```
-export_to_csv("atopic dermatitis biologic therapy", max_results=50, year_from=2018)
-→ export_to_ris([doi1, doi2, ...])
+find_research_gaps → search_clinical_trials(status=RECRUITING)
+→ search_nih_reporter → search_arxiv
+```
+
+**Drug/regulatory intelligence:**
+```
+search_fda_approvals(search_type='label') → search_fda_approvals(search_type='adverse_events')
+→ search_clinical_trials → search_pubmed
+```
+
+**Genetic dermatology:**
+```
+search_omim("epidermolysis bullosa") → get_citation_network
+→ find_expert_reviewers → search_pubmed
 ```
 
 ---
 
 ## Data sources
 
-- [PubMed](https://pubmed.ncbi.nlm.nih.gov/) — NLM/NIH medical database
-- [Semantic Scholar](https://www.semanticscholar.org/) — AI-powered, 200M+ papers
-- [OpenAlex](https://openalex.org/) — 250M+ scholarly works
-- [Europe PMC](https://europepmc.org/) — Full-text biomedical literature
-- [ClinicalTrials.gov](https://clinicaltrials.gov/) — Clinical trials registry
-- [bioRxiv](https://biorxiv.org/) / [medRxiv](https://medrxiv.org/) — Preprints
-- [Unpaywall](https://unpaywall.org/) — Legal open-access versions
-- [CrossRef](https://crossref.org/) — Metadata, references, retraction data
+PubMed · Semantic Scholar · OpenAlex · Europe PMC · Cochrane · arXiv · CORE ·
+ClinicalTrials.gov · bioRxiv · medRxiv · Unpaywall · CrossRef · openFDA ·
+NIH RePORTER · WHO IRIS · OMIM
 
 ---
 
 ## Notes
-
-- Render free tier hibernates after 15 min. Use [UptimeRobot](https://uptimerobot.com) (free) to ping `/mcp` every 10 min.
-- AI tools (`extract_pico`, `summarize_papers`, `compare_papers`, `translate_query`) use the Claude API — work automatically via Claude.ai with no setup.
-- Results are cached in memory for 1 hour — repeated identical queries return instantly.
+- Render free tier hibernates after 15 min. Use [UptimeRobot](https://uptimerobot.com) to ping `/mcp` every 10 min.
+- AI tools (RoB, GRADE, PICO, etc.) call the Claude API automatically when used via Claude.ai — no setup needed.
+- Results cached in memory for 1 hour.
 
 ---
 
 ## License
-
 MIT
