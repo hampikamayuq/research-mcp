@@ -736,8 +736,7 @@ async def find_free_fulltext_batch(dois: list[str]) -> str:
 # MAIN
 # ─────────────────────────────────────────
 
-if __name__ == "__main__":
-    mcp.run(transport="streamable-http")
+
 
 
 # ─────────────────────────────────────────
@@ -4496,3 +4495,7 @@ def _format_fulltext(
     if truncated:
         output += "\n\n---\n*[Text truncated. Request specific section for complete content.]*"
     return output
+
+
+if __name__ == "__main__":
+    mcp.run(transport="streamable-http")
