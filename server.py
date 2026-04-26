@@ -29,7 +29,7 @@ import pymupdf4llm    # pip install pymupdf4llm
 from typing import Optional
 
 _port = int(os.environ.get("PORT", 8000))
-mcp = FastMCP("research-mcp", host="0.0.0.0", port=_port)
+mcp = FastMCP("research-mcp", host="0.0.0.0", port=_port, stateless_http=True)
 
 PUBMED_API_KEY = os.environ.get("PUBMED_API_KEY", "")
 PUBMED_EMAIL   = os.environ.get("PUBMED_EMAIL", "research@qara.com.br")
